@@ -1,0 +1,89 @@
+{
+  "name": "ilp-protocol-lt",
+  "version": "1.0.0",
+  "description": "Implementation of Loopback Transport (IL-RFC-29)",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "nyc mocha",
+    "docs:api": "jsdoc2md --global-index-format none \"src/**/*.js\" --template docs/README.template.md > docs/README.intermediate.md",
+    "docs:toc": "md-toc-filter docs/README.intermediate.md > README.md",
+    "docs": "npm run docs:api && npm run docs:toc",
+    "integration": "integration-loader && integration all"
+  },
+  "engines": {
+    "node": ">=8.4.9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interledgerjs/ilp-protocol-lt.git"
+  },
+  "keywords": [
+    "interledger",
+    "ilp",
+    "loopback",
+    "payments"
+  ],
+  "author": "Interledger Team <info@interledger.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/interledgerjs/ilp-protocol-lt/issues"
+  },
+  "homepage": "https://github.com/interledgerjs/ilp-protocol-lt#readme",
+  "dependencies": {
+    "ilp-packet": "^2.2.0",
+    "ilp-protocol-ildcp": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^4.12.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "five-bells-integration-test-loader": "^1.3.0",
+    "ghooks": "^2.0.2",
+    "ilp-plugin-btp": "^1.1.9",
+    "ilp-plugin-mini-accounts": "^3.4.3",
+    "jsdoc-to-markdown": "^3.0.4",
+    "md-toc-filter": "^0.9.0",
+    "mocha": "^4.0.1",
+    "nock": "^9.0.2",
+    "nyc": "^11.4.1",
+    "sinon": "^4.1.3",
+    "source-map-support": "^0.5.0",
+    "validate-commit-msg": "^2.6.1"
+  },
+  "config": {
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
+    },
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    },
+    "five-bells-integration-test-loader": {
+      "module": "five-bells-integration-test",
+      "repo": "interledgerjs/five-bells-integration-test"
+    }
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "test/**/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "all": true
+  }
+}
