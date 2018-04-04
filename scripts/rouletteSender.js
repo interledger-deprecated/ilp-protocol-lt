@@ -1,5 +1,5 @@
 const PluginBtp = require('ilp-plugin-btp')
-const ILP = require('..')
+const LT = require('..')
 
 // The threshold for accepting a chunk is
 // the average seen so far, times a factor that
@@ -16,7 +16,7 @@ const INITIAL_OPTIMISM = 2.5
   console.log('connecting plugin 1')
   await pluginOut.connect()
   console.log('connected plugins')
-  const loop = await ILP.LT.createLoop({ pluginOut, pluginIn })
+  const loop = await LT.createLoop({ pluginOut, pluginIn })
   let cummSeen = 0
   let numSeen = 0
   let numAccepted = 0
