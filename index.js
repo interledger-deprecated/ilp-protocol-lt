@@ -76,7 +76,7 @@ class Loop {
       }
       const result = this.pay({ sourceAmount, expiresAt, loopbackHandler })
       if (result.data.code === 'F08') {
-        chunkSize *= (result.data.maximumAmount * chunkSizeMargin / result.data.receivedAmount)
+        chunkSize = sourceAmount * (result.data.maximumAmount * chunkSizeMargin / result.data.receivedAmount)
       }
       if (result.typeString === 'ilp_fulfill' && amountArrived < minDestinationAmount) {
         setImmediate(runThread) // otherwise, end this thread (congestion control)
