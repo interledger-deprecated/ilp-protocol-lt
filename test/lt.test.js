@@ -50,7 +50,14 @@ describe('LT', function () {
             return true
           }
         })
-        assert.equal(result, true)
+        assert.deepEqual(result, {
+          type: 13,
+          typeString: 'ilp_fulfill',
+          data: {
+            fulfillment: result.data.fulfillment,
+            data: Buffer.alloc(0)
+          }
+        })
       })
       it('should complete a rejected loopback payment', async function () {
         const result = await this.loop.pay({
@@ -61,7 +68,16 @@ describe('LT', function () {
             return false
           }
         })
-        assert.equal(result, false)
+        assert.deepEqual(result, {
+          type: 14,
+          typeString: 'ilp_reject',
+          data: {
+            code: 'F04',
+            triggeredBy: 'test.example.alice',
+            message: 'Insufficient destination amount',
+            data: Buffer.alloc(0)
+          }
+        })
       })
     })
   })
