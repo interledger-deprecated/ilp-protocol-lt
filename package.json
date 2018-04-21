@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/interledgerjs/ilp-protocol-lt#readme",
   "dependencies": {
-    "ilp-packet": "^2.2.0",
+    "ilp-packet": "github:interledgerjs/ilp-packet",
     "ilp-protocol-ildcp": "^1.0.0"
   },
   "devDependencies": {

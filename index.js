@@ -45,8 +45,48 @@ class Loop {
     this.pending[executionCondition] = { fulfillment, loopbackHandler }
     const resultPacket = await this.pluginOut.sendData(packet)
     delete this.pending[executionCondition]
-    const result = IlpPacket.deserializeIlpPacket(resultPacket)
-    return (result.typeString === 'ilp_fulfill')
+    return IlpPacket.deserializeIlpPacket(resultPacket)
+  }
+
+  async chunked ({ minDestinationAmount, minExchangeRate }) {
+    let chunkSizeMargin = 0.99
+    let endGameFactor = 0.75
+    let initialNumThreads = 4
+    let additiveIncreaseInterval = 1000
+    let maxDestinationAmount = minDestinationAmount * 1.01
+    let chunkSize = minDestinationAmount / minExchangeRate
+    let amountArrived = 0
+    let done
+    const runThread = async () => {
+      const sourceAmount = chunkSize
+      const expiresAt = new Date(new Date().getTime() + 10000)
+      const loopbackHandler = (amount) => {
+        if (amount < sourceAmount * minExchangeRate) {
+          return false
+        }
+        if (amountArrived + amount > maxDestinationAmount) {
+          chunkSize *= endGameFactor
+          return false
+        }
+        if (amountArrived + amount > minDestinationAmount) {
+          setImmediate(done)
+        }
+        amountArrived += amount
+        return true
+      }
+      const result = this.pay({ sourceAmount, expiresAt, loopbackHandler })
+      if (result.data.code === 'F08') {
+        chunkSize = sourceAmount * (result.data.maximumAmount * chunkSizeMargin / result.data.receivedAmount)
+      }
+      if (result.typeString === 'ilp_fulfill' && amountArrived < minDestinationAmount) {
+        setImmediate(runThread) // otherwise, end this thread (congestion control)
+      }
+    }
+    for (let i = 0; i < initialNumThreads; i++) {
+      runThread()
+    }
+    setInterval(runThread, additiveIncreaseInterval)
+    return new Promise(resolve => { done = resolve })
   }
 }
 
